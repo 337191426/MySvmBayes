@@ -15,7 +15,7 @@ object BAYESClassify {
     val spark = SparkSession.builder().config(conf).getOrCreate()
     spark.sparkContext.setLogLevel("WARN") ///日志级别
     val str=spark.sparkContext.parallelize(Array(string))
-    str.saveAsTextFile("/root/data/text.txt")
+    str.saveAsTextFile("/root/data/text")
     import spark.implicits._
     val rand = new Random()
     val data = spark.read.textFile("/root/data/text0.txt").map(
@@ -23,7 +23,7 @@ object BAYESClassify {
         (line.split(" ").filter(!_.equals(" ")).filter(!_.equals(":")).filter(!_.equals(",")).filter(!_.equals(".")),
           0, rand.nextDouble())
       }).toDF("words", "value", "random")
-    dirDel(new File("/root/data/text.txt"))
+    deleteDir(new File("/root/data/text"))
     //文本特征抽取
     val hashingTf = new HashingTF()
       .setInputCol("words")
@@ -42,13 +42,17 @@ object BAYESClassify {
      .toString).collect()(0))
   }
 
-  def dirDel(path: File) {
-    if (!path.exists())
-      return
-    else if (path.isFile()) {
-      path.delete()
-      println(path + ":  文件被删除")
-      return
-    }
+  def deleteDir(dir: File): Unit = {
+    val files = dir.listFiles()
+    files.foreach(f => {
+      if (f.isDirectory) {
+        deleteDir(f)
+      } else {
+        f.delete()
+        println("delete file " + f.getAbsolutePath)
+      }
+    })
+    dir.delete()
+    println("delete dir " + dir.getAbsolutePath)
   }
 }

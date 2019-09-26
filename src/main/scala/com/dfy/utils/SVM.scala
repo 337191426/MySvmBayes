@@ -23,7 +23,7 @@ object SVM {
         (line.split(" ").filter(!_.equals(" ")).filter(!_.equals(":")).filter(!_.equals(",")).filter(!_.equals(".")),
           0, rand.nextDouble())
       }).toDF("words", "value", "random")
-    dirDel(new File("/root/data/text.txt"))
+    deleteDir(new File("/root/data/text.txt"))
     //文本特征抽取
     val hashingTf = new HashingTF()
       .setInputCol("words")
@@ -42,13 +42,18 @@ object SVM {
       .toString).collect()(0))//返回
   }
 
-  def dirDel(path: File) {
-    if (!path.exists())
-      return
-    else if (path.isFile()) {
-      path.delete()
-      println(path + ":  文件被删除")
-      return
-    }
+
+  def deleteDir(dir: File): Unit = {
+    val files = dir.listFiles()
+    files.foreach(f => {
+      if (f.isDirectory) {
+        deleteDir(f)
+      } else {
+        f.delete()
+        println("delete file " + f.getAbsolutePath)
+      }
+    })
+    dir.delete()
+    println("delete dir " + dir.getAbsolutePath)
   }
 }
