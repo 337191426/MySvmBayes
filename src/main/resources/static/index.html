@@ -46,6 +46,7 @@
     <!--responsive.css-->
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/AdminLTE.css">
+    <link rel="stylesheet" href="assets/css/alt/style.css">
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -105,6 +106,10 @@
                 <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
                     <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
                         <li class=" scroll active"><a href="#home">home</a></li>
+                        <li><a href="https://github.com/337191426/SvmBayes" title="跳转到GitHub" target="_blank">GitHub
+                        </a></li>
+                        <li><a href="https://github.com/337191426/SvmBayes/blob/master/README.md" title="ReadMe"
+                               target="_blank">ReadMe</a></li>
                     </ul><!--/.nav -->
                 </div><!-- /.navbar-collapse -->
             </div><!--/.container-->
@@ -124,6 +129,23 @@
             <p>
                 线性分类支持向量机/朴素贝叶斯
             </p>
+        </div>
+        <div class="loader-inner" id="loader-inner" style="height: 673px; margin-top: 300px">
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
+            <div class="loader-line-wrap">
+                <div class="loader-line"></div>
+            </div>
         </div>
         <div class="welcome-hero-serch-box">
             <div class="welcome-hero-form">
@@ -312,7 +334,7 @@
 <script src="assets/js/custom.js"></script>
 <script>
     var words = "";
-
+    $('#loader-inner').hide();
 
     function setCondition() {
         words = $("#words").val();
@@ -324,13 +346,18 @@
         var url = "/svm?" + "words=" + words;
         var result = validate();
         if (result === "OK") {
+            $("#loader-inner").show();
             $.ajax({
                 type: "GET",
                 url: url,
                 cache: false, //禁用缓存
                 success: function (result) {
+                    $('#loader-inner').hide();
                     console.log(result);
                     showModal(result)
+                },
+                error: function () {
+                    $('#loader-inner').hide();
                 }
             });
         } else {
@@ -340,6 +367,7 @@
 
 
     function submit2() {
+        $("#loader-inner").show();
         setCondition();
         var result = validate();
         if (result === "OK") {
@@ -349,8 +377,12 @@
                 url: url,
                 cache: false, //禁用缓存
                 success: function (result) {
+                    $('#loader-inner').hide();
                     console.log(result);
                     showModal(result)
+                },
+                error: function () {
+                    $('#loader-inner').hide();
                 }
             });
         } else {

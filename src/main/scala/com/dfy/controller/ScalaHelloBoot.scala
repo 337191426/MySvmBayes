@@ -14,12 +14,14 @@ class ScalaHelloBoot {
   @RequestMapping(value = Array("/bayes"), method = Array(RequestMethod.GET))
   @ResponseBody
   def bayes(words:String) = {
+//    BAYESClassify.close()
     ResultVOUtil.success(BAYESClassify.bayes(words))  // Scala调用已有的Java代码
   }
 
   @RequestMapping(value = Array("/svm"), method = Array(RequestMethod.GET))
   @ResponseBody
   def svm(words:String) = {
+//    SVM.close()
     ResultVOUtil.success(SVM.svm(words))  // Scala调用已有的Java代码
   }
 
