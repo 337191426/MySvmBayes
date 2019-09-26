@@ -14,16 +14,14 @@ object BAYESClassify {
     val conf = new SparkConf().setMaster("local").setAppName("SA")
     val spark = SparkSession.builder().config(conf).getOrCreate()
     spark.sparkContext.setLogLevel("WARN") ///日志级别
-    val str=spark.sparkContext.parallelize(Array(string))
-    str.saveAsTextFile("/root/data/text")
     import spark.implicits._
     val rand = new Random()
-    val data = spark.read.textFile("/root/data/text0.txt").map(
+    val data = spark.read.textFile("/root/data/text.txt").map(
       line => {
         (line.split(" ").filter(!_.equals(" ")).filter(!_.equals(":")).filter(!_.equals(",")).filter(!_.equals(".")),
           0, rand.nextDouble())
       }).toDF("words", "value", "random")
-    deleteDir(new File("/root/data/text"))
+    val count=data.count().toInt
     //文本特征抽取
     val hashingTf = new HashingTF()
       .setInputCol("words")
@@ -38,21 +36,9 @@ object BAYESClassify {
     val model=NaiveBayesModel.load("/root/model/bayes")
     val result = model.transform(transformedData)
     result.show(false)
-    result.map(_.getAs("rawPrediction").toString()).collect()(0).concat("@").concat(result.map(_.getAs("prediction")
-     .toString).collect()(0))
+    result.map(_.getAs("rawPrediction").toString()).collect()(count-1).concat("@").concat(result.map(_.getAs
+    ("prediction")
+     .toString).collect()(count-1))
   }
 
-  def deleteDir(dir: File): Unit = {
-    val files = dir.listFiles()
-    files.foreach(f => {
-      if (f.isDirectory) {
-        deleteDir(f)
-      } else {
-        f.delete()
-        println("delete file " + f.getAbsolutePath)
-      }
-    })
-    dir.delete()
-    println("delete dir " + dir.getAbsolutePath)
-  }
 }

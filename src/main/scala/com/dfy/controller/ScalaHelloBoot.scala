@@ -1,6 +1,6 @@
 package com.dfy.controller
 
-import com.dfy.utils.{BAYESClassify, ResultVOUtil, SVM}
+import com.dfy.utils.{BAYESClassify, FileUtils, ResultVOUtil, SVM}
 import org.springframework.web.bind.annotation._
 
 
@@ -14,7 +14,7 @@ class ScalaHelloBoot {
   @RequestMapping(value = Array("/bayes"), method = Array(RequestMethod.GET))
   @ResponseBody
   def bayes(words:String) = {
-//    BAYESClassify.close()
+    FileUtils.saveAsFile(words)
     ResultVOUtil.success(BAYESClassify.bayes(words))  // Scala调用已有的Java代码
   }
 
@@ -22,6 +22,7 @@ class ScalaHelloBoot {
   @ResponseBody
   def svm(words:String) = {
 //    SVM.close()
+    FileUtils.saveAsFile(words)
     ResultVOUtil.success(SVM.svm(words))  // Scala调用已有的Java代码
   }
 
